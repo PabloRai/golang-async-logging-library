@@ -43,7 +43,7 @@ func (al Alog) Start() {
 		select {
 		case msg, ok := <-al.msgCh:
 			if ok {
-				al.write(msg, nil)
+				go al.write(msg, nil)
 			}
 		}
 	}
@@ -72,14 +72,14 @@ func (al Alog) shutdown() {
 }
 
 // MessageChannel returns a channel that accepts messages that should be written to the log.
-func (al Alog) MessageChannel() chan string {
+func (al Alog) MessageChannel() chan<- string {
 	return al.msgCh
 }
 
 // ErrorChannel returns a channel that will be populated when an error is raised during a write operation.
 // This channel should always be monitored in some way to prevent deadlock goroutines from being generated
 // when errors occur.
-func (al Alog) ErrorChannel() chan error {
+func (al Alog) ErrorChannel() chan<- error {
 	return al.errorCh
 }
 
